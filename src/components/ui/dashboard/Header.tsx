@@ -13,6 +13,7 @@ interface UserType {
   name?: string;
   email?: string;
   profileImage?: string;
+  profile_picture?: string;
 }
 
 interface HeaderProps {
@@ -121,9 +122,9 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick }) => {
               onClick={() => setMenuOpen(!menuOpen)}
               className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
             >
-              {user?.profileImage ? (
+              {(user?.profile_picture || user?.profileImage) ? (
                 <Image
-                  src={user.profileImage}
+                  src={user.profile_picture || user.profileImage!}
                   alt={user.name || "User Avatar"}
                   width={40}
                   height={40}

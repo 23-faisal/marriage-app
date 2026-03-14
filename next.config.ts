@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/storage/**",
       },
+      // Production API server
+      {
+        protocol: "https",
+        hostname: "api.shaadimartbd.com",
+        pathname: "/**",
+      },
       // External fallback avatars
       {
         protocol: "https",
