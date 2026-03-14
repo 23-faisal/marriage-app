@@ -17,9 +17,15 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/storage/**",
       },
-      // Production API server
+      // Production API server (https)
       {
         protocol: "https",
+        hostname: "api.shaadimartbd.com",
+        pathname: "/**",
+      },
+      // Production API server (http - Laravel storage URLs)
+      {
+        protocol: "http",
         hostname: "api.shaadimartbd.com",
         pathname: "/**",
       },

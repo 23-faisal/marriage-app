@@ -3,7 +3,6 @@
 import { logout } from "@/service/authService";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, LogOut, Menu, Settings, User } from "lucide-react"; // Added Menu icon
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -123,11 +122,10 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick }) => {
               className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
             >
               {(user?.profile_picture || user?.profileImage) ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={user.profile_picture || user.profileImage!}
                   alt={user.name || "User Avatar"}
-                  width={40}
-                  height={40}
                   className="w-10 h-10 rounded-full object-cover border border-gray-700 shadow-sm"
                 />
               ) : (
