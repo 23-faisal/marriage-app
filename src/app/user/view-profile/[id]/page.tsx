@@ -12,6 +12,7 @@ import PartnerPreferences from "@/components/ui/ViewProfile/PartnerPreferences";
 import ProfileHeader from "@/components/ui/ViewProfile/ProfileHeader";
 import { ProfileData } from "@/types";
 import { calculateAge, getUserProfile } from "@/utils/profileUtils";
+import { toHttps } from "@/lib/config";
 
 export default function ViewProfilePage({ params }: { params: Promise<{ id: string }> }) {
   // ✅ unwrap params using React.use()
@@ -49,8 +50,8 @@ export default function ViewProfilePage({ params }: { params: Promise<{ id: stri
   
   const age = calculateAge(profile.dob);
   const primaryPhotoUrl =
-    profile.photos?.find((p) => p.is_primary)?.url ||
-    profile.photos?.[0]?.url ||
+    toHttps(profile.photos?.find((p) => p.is_primary)?.url) ||
+    toHttps(profile.photos?.[0]?.url) ||
     "/default-avatar.svg";
 
 

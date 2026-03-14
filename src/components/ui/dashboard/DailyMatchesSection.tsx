@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, BookUser, Calendar, Eye, GraduationCap, MapPin, ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
+import { toHttps } from "@/lib/config";
 
 interface Match {
   id: number;
@@ -114,7 +115,7 @@ const DailyMatchesSection = () => {
                 {/* Image */}
                 <div className="relative h-40 w-full bg-gray-200 overflow-hidden">
                   <img
-                    src={match.photo?.trim() ? match.photo : fallbackImage}
+                    src={toHttps(match.photo?.trim() ? match.photo : undefined) || fallbackImage}
                     alt={match.user_name || `Profile ${index + 1}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => { (e.target as HTMLImageElement).src = fallbackImage; }}

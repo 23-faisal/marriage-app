@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookUser, Calendar, Eye, GraduationCap, MapPin, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { toHttps } from "@/lib/config";
 
 
 
@@ -50,7 +51,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       <div className="flex justify-center items-center sm:items-start sm:justify-start w-full sm:w-40 p-4 sm:p-5">
         <div className="relative">
           <img
-            src={profile.photo || fallbackImage}
+            src={toHttps(profile.photo) || fallbackImage}
             alt={profile.user_name || `Profile ${profile.id}`}
             className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-rose-500 object-cover object-center shadow-md"
             onError={(e) => { (e.target as HTMLImageElement).src = fallbackImage; }}

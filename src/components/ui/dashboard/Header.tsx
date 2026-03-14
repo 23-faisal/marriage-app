@@ -1,6 +1,7 @@
 "use client";
 
 import { logout } from "@/service/authService";
+import { toHttps } from "@/lib/config";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, LogOut, Menu, Settings, User } from "lucide-react"; // Added Menu icon
 import Link from "next/link";
@@ -124,7 +125,7 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick }) => {
               {(user?.profile_picture || user?.profileImage) ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={user.profile_picture || user.profileImage!}
+                  src={toHttps(user.profile_picture || user.profileImage) || ""}
                   alt={user.name || "User Avatar"}
                   className="w-10 h-10 rounded-full object-cover border border-gray-700 shadow-sm"
                 />
