@@ -40,30 +40,43 @@ const DailyMatchesSection = () => {
       try {
         const token = localStorage.getItem("accessToken") || "";
         const userData = localStorage.getItem("userData");
-        const gender = userData ? JSON.parse(userData)?.gender : null;
+        const user = userData ? JSON.parse(userData) : null;
+        const userId = user?.id;
+        const userGender = user?.gender;
 
-        // Fetch opposite gender profiles as daily picks
-        const oppositeGender = gender === "male" ? "female" : gender === "female" ? "male" : "";
+        const oppositeGender = userGender === "male" ? "female" : userGender === "female" ? "male" : "female";
+
+        // Fetch user's profile to get religion & marital_status (required by search API)
+        let religion = "islam";
+        let maritalStatus = "UnMarried";
+
+        if (userId) {
+          const profileRes = await fetch(`/api/user/profile?user_id=${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (profileRes.ok) {
+            const profileData = await profileRes.json();
+            const profile = profileData.data;
+            if (profile?.religion) religion = profile.religion;
+            if (profile?.marital_status) maritalStatus = profile.marital_status;
+          }
+        }
 
         const res = await fetch("/api/user/search", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({
             gender: oppositeGender,
             age_from: 18,
-            age_to: 45,
-            religion: "",
-            marital_status: "",
+            age_to: 50,
+            religion,
+            marital_status: maritalStatus,
           }),
         });
 
         const data = await res.json();
-        if (res.ok && data.success) {
+        if (data.success) {
           const list = Array.isArray(data.data?.data) ? data.data.data : [];
-          // Show up to 3 random picks
           const shuffled = list.sort(() => Math.random() - 0.5).slice(0, 3);
           setMatches(shuffled);
         }
