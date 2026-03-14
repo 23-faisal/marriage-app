@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-// All imports used as provided
-import { getCurrentUser } from "../../../../service/authService/index";
-import { createEducation, getEducationByProfile, updateEducation } from "../../../../service/EducationService";
-import { getProfileByUser } from "../../../../service/ProfileService";
+import { toast } from "sonner";
 
 interface FormData {
   Heighets_degree: string;
@@ -17,9 +14,8 @@ interface FormData {
 export default function Step2Page() {
   const router = useRouter();
 
-  // --- NEW STATE: Loading indicator ---
-  const [isLoading, setIsLoading] = useState(true); 
-  // ------------------------------------
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // --- Logic remains completely unchanged ---
   const [formData, setFormData] = useState<FormData>({
@@ -34,36 +30,59 @@ export default function Step2Page() {
 
   useEffect(() => {
     const fetchEducation = async () => {
-      // 1. Set loading to true (already done in useState init)
-      
-      const user = await getCurrentUser();
+      const token = localStorage.getItem("accessToken") || "";
+      const userData = localStorage.getItem("userData");
+      const user = userData ? JSON.parse(userData) : null;
+
       if (!user?.id) {
-        setIsLoading(false); // Stop loading if user isn't found
-        return router.push("/login");
+        setIsLoading(false);
+        router.push("/login");
+        return;
       }
 
-      // Get user's profile
-      const profile = await getProfileByUser(user.id);
+      // Get user's profile via API route
+      const profileRes = await fetch(`/api/user/profile?user_id=${user.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!profileRes.ok) {
+        setIsLoading(false);
+        toast.error("Profile not found. Please complete Step 1 first.");
+        router.push("/user/profile/step1");
+        return;
+      }
+
+      const profileData = await profileRes.json();
+      const profile = profileData.data;
+
       if (!profile?.id) {
-        setIsLoading(false); // Stop loading if profile isn't found
-        return console.error("Profile not found");
+        setIsLoading(false);
+        toast.error("Profile not found. Please complete Step 1 first.");
+        router.push("/user/profile/step1");
+        return;
       }
 
       setProfileId(profile.id);
 
-      // Get existing education by profile
-      const edu = await getEducationByProfile(profile.id);
-      if (edu) {
-        setFormData({
-          Heighets_degree: edu.Heighets_degree,
-          institute_name: edu.institute_name,
-          graduation_year: edu.graduation_year,
-          additional_certificates: edu.additional_certificates || "",
-        });
-        setEducationId(edu.id);
+      // Get existing education
+      const eduRes = await fetch(`/api/user/education?profile_id=${profile.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (eduRes.ok) {
+        const eduData = await eduRes.json();
+        const edu = eduData.data;
+        if (edu) {
+          setFormData({
+            Heighets_degree: edu.Heighets_degree || "",
+            institute_name: edu.institute_name || "",
+            graduation_year: edu.graduation_year || new Date().getFullYear(),
+            additional_certificates: edu.additional_certificates || "",
+          });
+          setEducationId(edu.id);
+        }
       }
-      
-      // 2. Set loading to false after data is fetched/processed
+
       setIsLoading(false);
     };
 
@@ -80,37 +99,66 @@ export default function Step2Page() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!profileId) return;
-    
-    // Optionally show a submission spinner here, but we'll focus on data fetch loading for now.
+
+    if (!profileId) {
+      toast.error("Profile not loaded yet. Please wait and try again.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const token = localStorage.getItem("accessToken") || "";
 
     try {
       const payload = { ...formData, profile_id: profileId };
 
-      let response;
+      let res: Response;
       if (educationId) {
-        response = await updateEducation(educationId, payload);
-        console.log("Education updated:", response);
+        res = await fetch(`/api/user/education?id=${educationId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
       } else {
-        response = await createEducation(payload);
-        console.log("Education created:", response);
-        if (response?.id) setEducationId(response.id);
+        res = await fetch("/api/user/education", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
       }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const msg = errData?.message || `Server error (${res.status})`;
+        toast.error(`Failed to save education: ${msg}`);
+        setIsSubmitting(false);
+        return;
+      }
+
+      const saved = await res.json();
+      if (saved?.id && !educationId) setEducationId(saved.id);
 
       await fetch("/api/user/profileProgress", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          completed_step: 2, 
-        }),
+        body: JSON.stringify({ completed_step: 2 }),
       });
 
+      toast.success("Education details saved!");
       router.push("/user/profile/step3");
-    } catch (error) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Something went wrong.";
       console.error("Education submission failed:", error);
+      toast.error(`Failed to save: ${msg}`);
+      setIsSubmitting(false);
     }
   };
 
@@ -224,11 +272,22 @@ export default function Step2Page() {
               {/* Save & Continue Button */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-auto bg-rose-600 text-white px-8 py-3 rounded-lg font-bold text-lg 
                            hover:bg-rose-700 transition duration-300 ease-in-out shadow-lg shadow-rose-500/30 
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                           disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Save & Continue &rarr;
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>Save & Continue &rarr;</>
+                )}
               </button>
             </div>
           </form>

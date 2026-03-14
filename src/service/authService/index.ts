@@ -2,6 +2,7 @@
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 /**
  * ===========================
@@ -9,7 +10,7 @@ import { FieldValues } from "react-hook-form";
  * ===========================
  */
 export const SignUpUser = async (userData: FieldValues) => {
-  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/signup`;
+  const apiUrl = `${API_URL}/signup`;
 
   try {
     const res = await fetch(apiUrl, {
@@ -60,7 +61,7 @@ export const SignUpUser = async (userData: FieldValues) => {
  */
 export const loginUser = async (userData: FieldValues) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/login`, {
+    const res = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
@@ -119,7 +120,7 @@ export const PasswordChange = async (payload: any) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/changePassword`, {
+    const res = await fetch(`${API_URL}/user/changePassword`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +165,7 @@ export const getCurrentUser = async () => {
     }
 
     // 2️⃣ Fallback to backend
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
+    const res = await fetch(`${API_URL}/user/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

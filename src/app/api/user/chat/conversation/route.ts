@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = API_URL;
 
 export async function GET() {
   try {
@@ -19,7 +20,7 @@ export async function GET() {
       return NextResponse.json({ error: "Invalid user" }, { status: 400 });
     }
 
-    const response = await fetch(`${BASE_URL}/api/chat/conversations`, {
+    const response = await fetch(`${BASE_URL}/chat/conversations`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

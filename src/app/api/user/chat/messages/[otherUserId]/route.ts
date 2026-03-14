@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = API_URL;
 
 export async function GET(
   request: Request,
@@ -38,7 +39,7 @@ export async function GET(
 
     console.log("Fetching messages for otherUserId:", otherUserId);
 
-    const response = await fetch(`${BASE_URL}/api/chat/messages/${otherUserId}`, {
+    const response = await fetch(`${BASE_URL}/chat/messages/${otherUserId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Call Laravel backend
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/payment/submit`, {
+    const res = await fetch(`${API_URL}/payment/submit`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

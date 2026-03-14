@@ -1,64 +1,54 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-// GET: fetch education entries for the logged-in user
 export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const profileId = url.searchParams.get("profile_id");
+
+  if (!profileId) {
+    return NextResponse.json({ error: "profile_id is required" }, { status: 400 });
+  }
+
   try {
     const cookieStore = await cookies();
-    const userData = cookieStore.get("userData")?.value;
-    const profile_id = userData ? JSON.parse(userData).profile_id : null;
+    const token =
+      cookieStore.get("accessToken")?.value ||
+      req.headers.get("authorization")?.replace("Bearer ", "") ||
+      "";
 
-    if (!profile_id) {
-      return NextResponse.json({ error: "Missing profile_id" }, { status: 401 });
-    }
-
-    const token = cookieStore.get("accessToken")?.value || "";
-
-    const res = await fetch(`${BASE_URL}/api/educations/profile/${profile_id}`, {
+    const res = await fetch(`${API_URL}/educations/profile/${profileId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       cache: "no-store",
     });
 
     const data = await res.json();
-    // console.log("Education fetch response data:", data);
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
-    console.error("Proxy fetch error (education GET):", err);
-    return NextResponse.json({ error: "Failed to fetch education data" }, { status: 500 });
+    console.error("Proxy error (education GET):", err);
+    return NextResponse.json({ error: "Failed to fetch education" }, { status: 500 });
   }
 }
 
-// PUT: update education
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   try {
     const cookieStore = await cookies();
-    const userData = cookieStore.get("userData")?.value;
-    const profile_id = userData ? JSON.parse(userData).profile_id : null;
+    const token =
+      cookieStore.get("accessToken")?.value ||
+      req.headers.get("authorization")?.replace("Bearer ", "") ||
+      "";
 
-    if (!profile_id) {
-      return NextResponse.json({ error: "Missing profile_id" }, { status: 401 });
-    }
-
-    const token = cookieStore.get("accessToken")?.value || "";
     const body = await req.json();
 
-    // Ensure profile_id is included in the request body
-    body.profile_id = profile_id;
-
-    if (!body.id) {
-      return NextResponse.json({ error: "Education ID is required" }, { status: 400 });
-    }
-
-    const res = await fetch(`${BASE_URL}/api/educations/${body.id}`, {
-      method: "PUT",
+    const res = await fetch(`${API_URL}/educations`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     });
@@ -66,7 +56,42 @@ export async function PUT(req: Request) {
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
-    console.error("Proxy fetch error (education PUT):", err);
-    return NextResponse.json({ error: "Failed to update education data" }, { status: 500 });
+    console.error("Proxy error (education POST):", err);
+    return NextResponse.json({ error: "Failed to create education" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  const url = new URL(req.url);
+  const educationId = url.searchParams.get("id");
+
+  if (!educationId) {
+    return NextResponse.json({ error: "id is required" }, { status: 400 });
+  }
+
+  try {
+    const cookieStore = await cookies();
+    const token =
+      cookieStore.get("accessToken")?.value ||
+      req.headers.get("authorization")?.replace("Bearer ", "") ||
+      "";
+
+    const body = await req.json();
+
+    const res = await fetch(`${API_URL}/educations/${educationId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err) {
+    console.error("Proxy error (education PUT):", err);
+    return NextResponse.json({ error: "Failed to update education" }, { status: 500 });
   }
 }

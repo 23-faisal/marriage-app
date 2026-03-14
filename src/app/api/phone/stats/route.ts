@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND = API_URL;
 
 export async function GET(req: Request) {
   try {
@@ -18,7 +19,7 @@ export async function GET(req: Request) {
     }
 
     const res = await fetch(
-      `${BACKEND}/api/track-phone-request/stats?viewed_user_id=${encodeURIComponent(viewedUserId)}`,
+      `${BACKEND}/track-phone-request/stats?viewed_user_id=${encodeURIComponent(viewedUserId)}`,
       {
         method: "GET",
         headers: {

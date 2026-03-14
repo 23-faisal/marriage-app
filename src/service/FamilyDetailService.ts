@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 interface FamilyDetailResponse {
   id?: number;
@@ -23,7 +24,7 @@ export const getFamilyDetailByProfile = async (profileId: number) => {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/family-details/profile/${profileId}`, {
+    const res = await fetch(`${API_URL}/family-details/profile/${profileId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -49,7 +50,7 @@ export const createFamilyDetail = async (formData: FieldValues) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/family-details`, {
+    const res = await fetch(`${API_URL}/family-details`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +77,7 @@ export const updateFamilyDetail = async (id: number, formData: FieldValues) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/family-details/${id}`, {
+    const res = await fetch(`${API_URL}/family-details/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

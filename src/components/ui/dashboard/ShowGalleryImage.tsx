@@ -33,9 +33,10 @@ export default function ShowGalleryImage({ reloadTrigger }: Props) {
   const loadGallery = async () => {
     try {
       const data = await fetchGallery();
-      setPhotos(data);
+      setPhotos(Array.isArray(data) ? data : []);
     } catch (err: any) {
-      toast.error(err.message || "Failed to load gallery");
+      console.error("Gallery load error:", err);
+      setPhotos([]);
     }
   };
 

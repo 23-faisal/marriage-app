@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000/api";
+const API_BASE_URL = API_URL;
 
 export async function GET(request: Request) {
   const accessToken = request.headers.get("authorization");
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/profile/progress`, {
+    const res = await fetch(`${API_BASE_URL}/profile/progress`, {
       method: "GET",
       headers: {
         Authorization: accessToken || "",
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/profile/progress/update`, {
+    const res = await fetch(`${API_BASE_URL}/profile/progress/update`, {
       method: "POST",
       headers: {
         Authorization: accessToken || "",

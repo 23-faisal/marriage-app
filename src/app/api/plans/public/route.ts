@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
 export async function GET(req: NextRequest) {
   try {
-    if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-      throw new Error("BACKEND_URL not defined");
+    if (!API_URL) {
+      throw new Error("NEXT_PUBLIC_API_URL not defined");
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/plans/public`, {
+    const res = await fetch(`${API_URL}/plans/public`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

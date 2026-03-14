@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
 export async function POST(req: Request) {
   try {
@@ -7,13 +8,14 @@ export async function POST(req: Request) {
     console.log("Sending params to backend:", body);
 
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+    const backendUrl = API_URL;
 
-    const res = await fetch(`${backendUrl}/api/profiles/search`, {
+    const res = await fetch(`${backendUrl}/profiles/search`, {
       method: "POST",
       headers: {
         Authorization: token || "",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     });
