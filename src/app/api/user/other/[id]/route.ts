@@ -39,6 +39,7 @@
 
 
 import { NextRequest, NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
 // GET /api/user/other/:id
 export async function GET(req: NextRequest) {
@@ -53,10 +54,11 @@ export async function GET(req: NextRequest) {
 
     const token = req.headers.get("authorization");
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/${userId}`, {
+    const res = await fetch(`${API_URL}/user/${userId}`, {
       headers: {
         Authorization: token || "",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 

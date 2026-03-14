@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = API_URL;
 
 // GET: fetch location details by profileId
 export async function GET(req: Request) {
@@ -18,10 +19,11 @@ export async function GET(req: Request) {
 
     const token = cookieStore.get("accessToken")?.value || "";
 
-    const res = await fetch(`${BASE_URL}/api/locations/profile/${profile_id}`, {
+    const res = await fetch(`${BASE_URL}/locations/profile/${profile_id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       cache: "no-store",
     });
@@ -52,11 +54,12 @@ export async function PUT(req: Request) {
     // Ensure profile_id is in body
     body.profile_id = profile_id;
 
-    const res = await fetch(`${BASE_URL}/api/locations`, {
+    const res = await fetch(`${BASE_URL}/locations`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     });

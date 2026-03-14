@@ -51,7 +51,7 @@ export default function ViewProfilePage({ params }: { params: Promise<{ id: stri
   const primaryPhotoUrl =
     profile.photos?.find((p) => p.is_primary)?.url ||
     profile.photos?.[0]?.url ||
-    "";
+    "/default-avatar.svg";
 
 
   return (

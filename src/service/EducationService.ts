@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 interface EducationResponse {
   id?: number;
@@ -19,7 +20,7 @@ export const getEducationByProfile = async (profileId: number) => {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/educations/profile/${profileId}`,
+      `${API_URL}/educations/profile/${profileId}`,
       {
         method: "GET",
         headers: {
@@ -48,7 +49,7 @@ export const createEducation = async (formData: FieldValues) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/educations`, {
+    const res = await fetch(`${API_URL}/educations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +77,7 @@ export const updateEducation = async (educationId: number, formData: FieldValues
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/educations/${educationId}`, {
+    const res = await fetch(`${API_URL}/educations/${educationId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

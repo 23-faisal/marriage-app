@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 interface LifestyleResponse {
   id?: number;
@@ -20,7 +21,7 @@ export const getLifestyleByProfile = async (profileId: number) => {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/lifestyles/profile/${profileId}`,
+      `${API_URL}/lifestyles/profile/${profileId}`,
       {
         method: "GET",
         headers: {
@@ -45,7 +46,7 @@ export const createLifestyle = async (formData: FieldValues) => {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/lifestyles`, {
+    const res = await fetch(`${API_URL}/lifestyles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +72,7 @@ export const updateLifestyle = async (lifestyleId: number, formData: FieldValues
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/lifestyles/${lifestyleId}`, {
+    const res = await fetch(`${API_URL}/lifestyles/${lifestyleId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

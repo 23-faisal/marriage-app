@@ -88,10 +88,9 @@ const CompleteProfileBanner = () => {
         
         if (res.ok && data.success) {
           setProgress(data.profile_completion || 0);
-          setLastStep(data.last_completed_step);
-        } else {
-          console.error("Failed to fetch progress:", data.message);
+          setLastStep(data.last_completed_step || 0);
         }
+        // 404 = no profile yet (new user) — stay at 0%, show step 1 link
       } catch (error) {
         console.error("Error fetching progress:", error);
       } finally {

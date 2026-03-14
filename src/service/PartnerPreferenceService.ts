@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 // Get partner preference by profile
 export const getPreferenceByProfile = async (profileId: number) => {
@@ -9,7 +10,7 @@ export const getPreferenceByProfile = async (profileId: number) => {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/partner-preferences/profile/${profileId}`,
+      `${API_URL}/partner-preferences/profile/${profileId}`,
       {
         method: "GET",
         headers: {
@@ -33,7 +34,7 @@ export const createPreference = async (formData: FieldValues) => {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/partner-preferences`, {
+    const res = await fetch(`${API_URL}/partner-preferences`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export const updatePreference = async (id: number, formData: FieldValues) => {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/partner-preferences/${id}`, {
+    const res = await fetch(`${API_URL}/partner-preferences/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

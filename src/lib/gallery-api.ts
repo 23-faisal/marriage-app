@@ -1,3 +1,5 @@
+import { API_URL } from "@/lib/config";
+
 function getToken() {
   return localStorage.getItem("accessToken");
 }
@@ -7,7 +9,7 @@ export async function fetchGallery(): Promise<[]> {
   const token = getToken();
 
   const res = await fetch(
-    process.env.NEXT_PUBLIC_FETCH_ALL_GALLERY_IMAGE_API!,
+    process.env.NEXT_PUBLIC_FETCH_ALL_GALLERY_IMAGE_API || `${API_URL}/profile/gallery`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -17,14 +19,15 @@ export async function fetchGallery(): Promise<[]> {
     },
   );
 
-  const result = await res.json();
-  console.log(result);
-
+  // If server error (e.g. user has no profile yet), return empty array gracefully
   if (!res.ok) {
-    throw new Error(result.message || "Failed to load gallery");
+    const result = await res.json().catch(() => ({}));
+    console.warn("Gallery fetch warning:", result.message || res.status);
+    return [] as unknown as [];
   }
 
-  return result.data;
+  const result = await res.json();
+  return (result.data ?? []) as [];
 }
 
 // DELETE IMAGE
@@ -33,7 +36,7 @@ export async function deleteGalleryImage(id: number) {
   if (!token) throw new Error("Not logged in");
 
   const res = await fetch(
-    `https://test.shaadimartbd.com/api/profile/gallery/${id}`,
+    `${API_URL}/profile/gallery/${id}`,
     {
       method: "DELETE",
       headers: {

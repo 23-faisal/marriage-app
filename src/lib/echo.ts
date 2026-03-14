@@ -132,6 +132,7 @@
 
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { API_URL } from "@/lib/config";
 
 declare global {
   interface Window {
@@ -171,7 +172,7 @@ export const getEchoInstance = () => {
     forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === "https",
     disableStats: true,
     enabledTransports: ["ws", "wss"],
-    authEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`,
+    authEndpoint: `${API_URL}/broadcasting/auth`,
     auth: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -193,7 +194,7 @@ export const getEchoInstance = () => {
     const channelName = `private-chat.${userId}`; // change this to your actual private channel
     console.log("📡 Testing auth for channel:", channelName);
 
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {
+    fetch(`${API_URL}/broadcasting/auth`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

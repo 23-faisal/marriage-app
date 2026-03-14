@@ -44,15 +44,16 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
   const locationName = profile.location?.city || profile.location?.present_address || "N/A";
 
   return (
-    <Card className="flex flex-col sm:flex-row w-4xl p-0 bg-white border  border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 overflow-hidden">
-      
+    <Card className="flex flex-col sm:flex-row w-full p-0 bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 overflow-hidden">
+
       {/* Avatar */}
-      <div className="flex justify-center items-center sm:items-start sm:justify-start w-full sm:w-48 p-4 sm:p-5 relative">
+      <div className="flex justify-center items-center sm:items-start sm:justify-start w-full sm:w-40 p-4 sm:p-5">
         <div className="relative">
           <img
             src={profile.photo || fallbackImage}
             alt={profile.user_name || `Profile ${profile.id}`}
-            className="w-32 h-32 sm:w-32 sm:h-32 rounded-full border-4 border-rose-500 object-cover object-center shadow-md"
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-rose-500 object-cover object-center shadow-md"
+            onError={(e) => { (e.target as HTMLImageElement).src = fallbackImage; }}
           />
           {profile.verified && (
             <div className="absolute bottom-1 right-1 bg-green-500 p-1.5 rounded-full shadow-md">
@@ -63,12 +64,12 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       </div>
 
       {/* Details */}
-      <CardContent className="flex-1 p-5 flex flex-col justify-between">
+      <CardContent className="flex-1 p-4 sm:p-5 flex flex-col justify-between">
         <div>
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{profile.user_name}</h3>
 
           {/* Key Info */}
-          <div className="flex flex-wrap gap-4 mt-2 text-gray-700 text-sm">
+          <div className="flex flex-wrap gap-3 mt-2 text-gray-700 text-sm">
             <span className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4 text-rose-500" /> {getAge(profile.dob)} yrs
             </span>
@@ -78,7 +79,7 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
           </div>
 
           {/* Career / Education / Location */}
-          <div className="flex flex-wrap gap-4 mt-3 text-gray-600 text-sm">
+          <div className="flex flex-wrap gap-3 mt-3 text-gray-600 text-sm">
             <span className="flex items-center gap-1.5">
               <BookUser className="h-4 w-4 text-purple-500" /> {profession}
             </span>
@@ -92,16 +93,17 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
         </div>
       </CardContent>
 
-      <div className="w-1/5 flex p-5">
-        <Link href={`/user/view-profile/${profile.user_id}`} className="w-full">
-            <Button
+      {/* View Profile Button */}
+      <div className="flex items-center justify-center sm:justify-end p-4 sm:p-5 w-full sm:w-auto">
+        <Link href={`/user/view-profile/${profile.user_id}`} className="w-full sm:w-auto">
+          <Button
             size="sm"
-            className="w-full py-2 sm:py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all duration-200"
-            >
+            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all duration-200"
+          >
             <Eye className="h-4 w-4" /> View Profile
-            </Button>
+          </Button>
         </Link>
-        </div>
+      </div>
 
     </Card>
   );

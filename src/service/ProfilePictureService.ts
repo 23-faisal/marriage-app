@@ -1,8 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { API_URL } from "@/lib/config";
 
-const API_BASE = process.env.NEXT_PUBLIC_BASE_API;
+const API_BASE = API_URL;
 
 const safeJson = async (res: Response) => {
   try {

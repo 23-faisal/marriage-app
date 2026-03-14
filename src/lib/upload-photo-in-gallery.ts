@@ -1,3 +1,5 @@
+import { API_URL } from "@/lib/config";
+
 interface GalleryUploadResponse {
   status: boolean;
   message: string;
@@ -23,7 +25,7 @@ export async function uploadGalleryImages(files: File[]): Promise<string[]> {
   });
 
   const response = await fetch(
-    process.env.NEXT_PUBLIC_GALLERY_IMAGE_UPLOAD_API as string,
+    process.env.NEXT_PUBLIC_GALLERY_IMAGE_UPLOAD_API || `${API_URL}/profile/gallery/upload`,
     {
       method: "POST",
       headers: {

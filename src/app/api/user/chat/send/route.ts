@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = API_URL;
 
 export async function POST(req: Request) {
   try {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     }
 
     // Send chat message to backend
-    const response = await fetch(`${BASE_URL}/api/chat/send`, {
+    const response = await fetch(`${BASE_URL}/chat/send`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

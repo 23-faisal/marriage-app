@@ -1,3 +1,5 @@
+import { API_URL } from "@/lib/config";
+
 export async function uploadProfilePicture(file: File): Promise<string> {
   const token = localStorage.getItem("accessToken");
 
@@ -7,7 +9,7 @@ export async function uploadProfilePicture(file: File): Promise<string> {
   formData.append("image", file);
 
   const response = await fetch(
-    process.env.NEXT_PUBLIC_PROFILE_PIC_UPLOAD_API!,
+    process.env.NEXT_PUBLIC_PROFILE_PIC_UPLOAD_API || `${API_URL}/profile-pictures/upload`,
     {
       method: "POST",
       body: formData,

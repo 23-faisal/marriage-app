@@ -1,9 +1,11 @@
+import { API_URL } from "@/lib/config";
+
 export async function trackPhoneRequest(viewedUserId: number) {
     try {
         const token = localStorage.getItem("accessToken");
-        const apiBase = process.env.NEXT_PUBLIC_BACKEND_URL;
+        const apiBase = API_URL;
 
-        const res = await fetch(`${apiBase}/api/track-phone-request`, {
+        const res = await fetch(`${apiBase}/track-phone-request`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 interface LocationResponse {
   id?: number;
@@ -21,7 +22,7 @@ export const getLocationByProfile = async (profileId: number) => {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/locations/profile/${profileId}`,
+      `${API_URL}/locations/profile/${profileId}`,
       {
         method: "GET",
         headers: {
@@ -48,7 +49,7 @@ export const createLocation = async (formData: FieldValues) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/locations`, {
+    const res = await fetch(`${API_URL}/locations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +78,7 @@ export const updateLocation = async (locationId: number, formData: FieldValues) 
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/locations/${locationId}`, {
+    const res = await fetch(`${API_URL}/locations/${locationId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

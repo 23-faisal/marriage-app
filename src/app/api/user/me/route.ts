@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
+import { API_URL } from "@/lib/config";
 
 export async function GET(req: Request) {
   try {
     // Forward the Authorization header from client
     const token = req.headers.get("authorization");
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/me`, {
+    const res = await fetch(`${API_URL}/user/me`, {
       headers: {
         Authorization: token || "",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 

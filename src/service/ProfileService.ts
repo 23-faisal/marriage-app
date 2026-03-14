@@ -53,6 +53,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { API_URL } from "@/lib/config";
 
 interface ProfileStep1Response {
   id?: number;
@@ -77,7 +78,7 @@ export const getProfileByUser = async (userId: number) => {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/profiles/user/${userId}`, {
+    const res = await fetch(`${API_URL}/profiles/user/${userId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -104,7 +105,7 @@ export const createProfileStep1 = async (formData: FieldValues) => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/profiles`, {
+    const res = await fetch(`${API_URL}/profiles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +132,7 @@ export const updateProfileStep1 = async (profileId: number, formData: FieldValue
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/profiles/${profileId}`, {
+    const res = await fetch(`${API_URL}/profiles/${profileId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
