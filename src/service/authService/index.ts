@@ -15,7 +15,7 @@ export const SignUpUser = async (userData: FieldValues) => {
   try {
     const res = await fetch(apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(userData),
     });
 
@@ -63,7 +63,7 @@ export const loginUser = async (userData: FieldValues) => {
   try {
     const res = await fetch(`${API_URL}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(userData),
     });
 
@@ -124,6 +124,7 @@ export const PasswordChange = async (payload: any) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
@@ -169,6 +170,7 @@ export const getCurrentUser = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       cache: "no-store",

@@ -28,6 +28,7 @@ export const getLocationByProfile = async (profileId: number) => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+        Accept: "application/json",
         },
       }
     );
@@ -53,6 +54,7 @@ export const createLocation = async (formData: FieldValues) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),
@@ -82,6 +84,7 @@ export const updateLocation = async (locationId: number, formData: FieldValues) 
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),

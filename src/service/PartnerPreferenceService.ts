@@ -16,6 +16,7 @@ export const getPreferenceByProfile = async (profileId: number) => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+        Accept: "application/json",
         },
       }
     );
@@ -38,6 +39,7 @@ export const createPreference = async (formData: FieldValues) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),
@@ -61,6 +63,7 @@ export const updatePreference = async (id: number, formData: FieldValues) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),

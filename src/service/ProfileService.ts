@@ -31,6 +31,7 @@
 //       method: "POST",
 //       headers: {
 //         "Content-Type": "application/json",
+        Accept: "application/json",
 //         Authorization: `Bearer ${accessToken}`,
 //       },
 //       body: JSON.stringify(formData),
@@ -83,6 +84,7 @@ export const getProfileByUser = async (userId: number) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -109,6 +111,7 @@ export const createProfileStep1 = async (formData: FieldValues) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),
@@ -136,6 +139,7 @@ export const updateProfileStep1 = async (profileId: number, formData: FieldValue
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),

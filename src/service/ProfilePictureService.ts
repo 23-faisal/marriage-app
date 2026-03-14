@@ -28,6 +28,7 @@ export const getProfilePictures = async () => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -90,6 +91,7 @@ export const deleteProfilePicture = async (id: number) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -121,6 +123,7 @@ export const setPrimaryPicture = async (id: number) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 

@@ -29,6 +29,7 @@ export const getFamilyDetailByProfile = async (profileId: number) => {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -54,6 +55,7 @@ export const createFamilyDetail = async (formData: FieldValues) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),
@@ -81,6 +83,7 @@ export const updateFamilyDetail = async (id: number, formData: FieldValues) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(formData),
