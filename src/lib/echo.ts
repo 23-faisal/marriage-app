@@ -141,35 +141,50 @@ declare global {
   }
 }
 
-window.Pusher = Pusher;
-
 let echoInstance: Echo<any> | null = null;
 
-export const getEchoInstance = () => {
+export const resetEchoInstance = () => {
+  if (echoInstance) {
+    try {
+      echoInstance.disconnect();
+    } catch {}
+    echoInstance = null;
+  }
+};
+
+export const getEchoInstance = (): Echo<any> => {
   if (echoInstance) return echoInstance;
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  const userData = typeof window !== "undefined"? localStorage.getItem("userData"): null;
-  const userId = userData? JSON.parse(userData).id : null;  
+  if (typeof window === "undefined") {
+    throw new Error("Echo can only be used in the browser");
+  }
+
+  // Attach Pusher to window (required by laravel-echo)
+  window.Pusher = Pusher;
+
+  const token = localStorage.getItem("accessToken");
   if (!token) {
-    console.error("❌ No access token found for Echo authorization");
     throw new Error("No access token found for Echo authorization");
   }
 
-  // Debug environment variables
-  console.log("🌐 Echo config:");
-  console.log("🔑 APP KEY:", process.env.NEXT_PUBLIC_REVERB_APP_KEY);
-  console.log("🌍 WS HOST:", process.env.NEXT_PUBLIC_REVERB_HOST);
-  console.log("🔌 WS PORT:", process.env.NEXT_PUBLIC_REVERB_PORT);
-  console.log("🔒 Force TLS:", process.env.NEXT_PUBLIC_REVERB_SCHEME === "https");
+  const forceTLS = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https";
+  const port = parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || "6001");
+
+  console.log("🌐 Creating Echo instance:", {
+    key: process.env.NEXT_PUBLIC_REVERB_APP_KEY,
+    host: process.env.NEXT_PUBLIC_REVERB_HOST,
+    port,
+    forceTLS,
+    authEndpoint: `${API_URL}/broadcasting/auth`,
+  });
 
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY!,
     wsHost: process.env.NEXT_PUBLIC_REVERB_HOST!,
-    wsPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || "6001"),
-    wssPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || "6001"),
-    forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === "https",
+    wsPort: port,
+    wssPort: port,
+    forceTLS,
     disableStats: true,
     enabledTransports: ["ws", "wss"],
     authEndpoint: `${API_URL}/broadcasting/auth`,
@@ -185,42 +200,23 @@ export const getEchoInstance = () => {
 
   const pusher = echoInstance.connector.pusher;
 
-  // Connection events
   pusher.connection.bind("connected", () => {
-    console.log("✅ Reverb connected successfully!");
-    console.log("🔑 Socket ID:", pusher.connection.socket_id);
-
-    // Example: test auth for a sample private channel
-    const channelName = `private-chat.${userId}`; // change this to your actual private channel
-    console.log("📡 Testing auth for channel:", channelName);
-
-    fetch(`${API_URL}/broadcasting/auth`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        socket_id: pusher.connection.socket_id,
-        channel_name: channelName,
-      }),
-    })
-      .then(res => res.json())
-      .then(data => console.log("🔑 Auth test response:", data))
-      .catch(err => console.error("❌ Auth test failed:", err));
+    console.log("✅ Reverb connected! Socket ID:", pusher.connection.socket_id);
   });
 
   pusher.connection.bind("error", (err: any) => {
     console.error("❌ Reverb connection error:", err);
+    // Reset so next call to getEchoInstance() creates a fresh connection
+    resetEchoInstance();
   });
 
   pusher.connection.bind("disconnected", () => {
-    console.warn("⚠️ Echo disconnected!");
+    console.warn("⚠️ Reverb disconnected. Will reconnect on next subscription.");
+    resetEchoInstance();
   });
 
   pusher.connection.bind("state_change", (states: any) => {
-    console.log("🔄 Connection state changed:", states);
+    console.log("🔄 Connection state:", states.current);
   });
 
   return echoInstance;

@@ -53,15 +53,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   // Stats fetching loader
   const [fetchingStats, setFetchingStats] = useState(true);
 
-  // Load user plan from localStorage
+  // Fetch current user plan fresh from backend to avoid stale localStorage
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
+    const fetchPlan = async () => {
       try {
-        const parsed = JSON.parse(userData);
-        setUserPlan(parsed?.plan?.plan_name || "");
-      } catch {}
-    }
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+        const res = await fetch("/api/user/me", {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        setUserPlan(data?.data?.plan?.plan_name || "");
+      } catch {
+        // fallback to localStorage if fetch fails
+        try {
+          const userData = localStorage.getItem("userData");
+          if (userData) {
+            const parsed = JSON.parse(userData);
+            setUserPlan(parsed?.plan?.plan_name || "");
+          }
+        } catch {}
+      }
+    };
+    fetchPlan();
   }, []);
 
   // Auto-fetch phone stats on component load

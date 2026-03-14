@@ -147,14 +147,15 @@ export default function PaymentFlowModal({ plan, onClose }: PaymentFlowModalProp
                 <span className="font-semibold text-green-400">Nagad:</span>
                 <span className="font-mono">01712878794</span>
               </div>
-              <div className="flex justify-between items-center p-2 bg-black/20 rounded">
-                <span className="font-semibold text-blue-400">Rocket:</span>
-                <span className="font-mono">01741664082</span>
-              </div>
-              <div className="flex justify-between items-center p-2 bg-black/20 rounded">
-                <span className="font-semibold text-purple-400">Bank:</span>
+            </div>
+            <div className="mt-3 p-3 bg-black/20 rounded text-sm">
+              <div className="flex justify-between items-center mb-1">
+                <span className="font-semibold text-purple-400">Bank A/C:</span>
                 <span className="font-mono">0100243763775</span>
               </div>
+              <p className="text-white/60 text-xs mt-1">
+                জনতা ব্যাংক লিমিটেড — বরিশাল কর্পোরেশন শাখা, সদর রোড, বরিশাল
+              </p>
             </div>
             <p className="text-yellow-200 text-xs text-center mt-3">
               💡 Send exact amount: <span className="font-bold">{plan.price}</span>
@@ -168,8 +169,7 @@ export default function PaymentFlowModal({ plan, onClose }: PaymentFlowModalProp
               <p>
                 Send <span className="font-bold">{plan.price}</span> via{" "}
                 <span className="font-semibold text-pink-400">bKash</span>,{" "}
-                <span className="font-semibold text-green-400">Nagad</span>,{" "}
-                <span className="font-semibold text-blue-400">Rocket</span>, or{" "}
+                <span className="font-semibold text-green-400">Nagad</span>, or{" "}
                 <span className="font-semibold text-purple-400">Bank Transfer</span>.
               </p>
             </div>

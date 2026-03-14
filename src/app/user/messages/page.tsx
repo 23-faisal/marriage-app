@@ -278,8 +278,7 @@ export default function MessagePage() {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pendingMessages, setPendingMessages] = useState<Set<string>>(new Set()); // Track pending messages
-  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false); // Mobile modal state
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
 
   // --- Fetch conversations on mount ---
   useEffect(() => {
@@ -359,14 +358,8 @@ export default function MessagePage() {
     fetchMessages();
   }, [activeChatId, currentUserId, chats]);
 
-  // --- Enhanced Real-time chat listener with deduplication ---
-  useChatListener({ 
-    currentUserId, 
-    setMessages, 
-    setChats,
-    pendingMessages,
-    setPendingMessages
-  });
+  // Real-time chat listener — only re-subscribes when currentUserId changes
+  useChatListener({ currentUserId, setMessages, setChats });
 
   // --- Select chat ---
   const handleSelectChat = (chatId: number) => {
@@ -394,20 +387,12 @@ export default function MessagePage() {
     if (!chat) return;
 
     const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    const tempId = `${Date.now()}-${Math.random()}`; // Unique ID for pending message
-    
-    const newMessage: Message = { 
-      sender: "me", 
-      text, 
-      time: timestamp,
-      tempId // Add temporary ID for tracking
-    };
 
-    // 1. INSTANT UI UPDATE (Optimistic)
+    // Optimistic UI update — show message immediately before server confirms
+    const newMessage: Message = { sender: "me", text, time: timestamp };
     setMessages(prev => [...prev, newMessage]);
-    setPendingMessages(prev => new Set([...prev, tempId]));
     
-    log.info("Optimistic update - message added instantly:", newMessage);
+    log.info("Optimistic update applied:", newMessage);
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -432,10 +417,6 @@ export default function MessagePage() {
       
     } catch (err) {
       log.error("Error sending message:", err);
-      // Optional: Mark message as failed in UI
-      setMessages(prev => prev.map(msg => 
-        msg.tempId === tempId ? { ...msg, failed: true } : msg
-      ));
     }
   };
 
