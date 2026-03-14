@@ -314,8 +314,26 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
       >
         Upgrade Membership Payment
       </h3>
-      <div className="py-4 text-teal-500 font-semibold">
-        <p>Bkash Personal Number - </p>
+      {/* Payment Account Info */}
+      <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm space-y-2">
+        <p className="font-bold text-yellow-700 mb-2">💰 Payment Accounts</p>
+        <div className="flex justify-between">
+          <span className="font-semibold text-pink-600">bKash:</span>
+          <span className="font-mono text-gray-800">01712878794</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-semibold text-green-600">Nagad:</span>
+          <span className="font-mono text-gray-800">01712878794</span>
+        </div>
+        <div className="border-t border-yellow-200 pt-2">
+          <div className="flex justify-between">
+            <span className="font-semibold text-purple-600">Bank A/C:</span>
+            <span className="font-mono text-gray-800">0100243763775</span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            জনতা ব্যাংক লিমিটেড — বরিশাল কর্পোরেশন শাখা, সদর রোড, বরিশাল
+          </p>
+        </div>
       </div>
 
       <p className="text-sm text-gray-500 mb-4 border-b pb-3">
@@ -375,9 +393,8 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
               -- Select Payment Method --
             </option>
             <option value="BKASH">BKASH</option>
-            <option value="ROCKET">ROCKET</option>
             <option value="NAGAD">NAGAD</option>
-            <option value="CARD">CARD</option>
+            <option value="BANK">BANK TRANSFER</option>
           </select>
         </div>
 
