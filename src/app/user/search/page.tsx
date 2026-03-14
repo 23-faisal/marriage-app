@@ -9,15 +9,16 @@ interface Profile {
   id: number;
   user_name: string;
   user_id: number;
+  name?: string;
   dob: string;
   gender: string;
   religion: string;
   marital_status: string;
   verified?: boolean;
   photo?: string;
-  education?: { Heighets_degree?: string; institute_name?: string }[];
-  location?: { present_address?: string; city?: string };
-  career?: { profession?: string; job_title?: string }[];
+  education?: { id: number; profile_id: number; Heighets_degree?: string; institute_name?: string; graduation_year?: string }[];
+  location?: { id: number; profile_id: number; present_address?: string; permanent_address?: string; city?: string; nationality?: string };
+  career?: { id: number; profile_id: number; profession?: string; designation?: string; company_name?: string; job_title?: string }[];
 }
 
 interface Filters {
